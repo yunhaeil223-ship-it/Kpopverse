@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KPOPVERSE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#f5e8ea;font-family:Arial,sans-serif}
+header{padding:18px;background:#1c181a;border-bottom:1px solid #650d24;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:23px;font-weight:bold;letter-spacing:2px}
+.logo span{color:#d45b78}
+button{background:#650d24;color:white;border:0;border-radius:10px;padding:11px 15px;cursor:pointer}
+main{max-width:900px;margin:auto;padding:18px 15px 90px}
+.hero{padding:35px 20px;border-radius:20px;background:linear-gradient(135deg,#401322,#171316);border:1px solid #650d24}
+.hero h1{font-size:38px;margin:15px 0}
+.hero p{color:#d2bfc5;line-height:1.6}
+h2{margin-top:30px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:#1c181a;border:1px solid #38272d;border-radius:15px;padding:17px}
+.card h3{color:#e9a2b2}
+.page{display:none}
+.page.active{display:block}
+.products{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.product{background:#1c181a;border:1px solid #38272d;border-radius:14px;padding:14px}
+.product .emoji{font-size:40px;text-align:center;padding:15px}
+.price{color:#f0a1b4;font-weight:bold}
+input,textarea,select{width:100%;padding:12px;margin:7px 0 13px;background:#100e0f;color:white;border:1px solid #650d24;border-radius:9px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#1c181a;display:flex;justify-content:space-around;padding:12px 2px;border-top:1px solid #650d24}
+nav button{background:transparent;padding:7px 4px;font-size:12px}
+.post{padding:15px 0;border-bottom:1px solid #38272d}
+small{color:#bbaab0}
+@media(min-width:650px){.grid,.products{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
 
+<header>
+<div class="logo">KPOP<span>VERSE</span></div>
+<button onclick="show('profile')">Profile</button>
+</header>
+
+<main>
+<section id="home" class="page active">
+<div class="hero">
+<small>YOUR K-POP UNIVERSE</small>
+<h1>Find your<br><span style="color:#d45b78">K-pop world.</span></h1>
+<p>Монгол K-pop фэнүүдийн нэгдэл. Цуглуулгаа хуваалц, шинэ зүйл ол, фэнүүдтэйгээ холбогд.</p>
+<button onclick="show('market')">Marketplace үзэх</button>
+<button onclick="show('community')">Community</button>
+</div>
+
+<h2>Explore KPOPVERSE</h2>
+<div class="grid">
+<div class="card" onclick="show('market')"><h3>🛍️ Marketplace</h3><small>Album, photocard, merch</small></div>
+<div class="card" onclick="show('community')"><h3>💬 Community</h3><small>Фэнүүдтэйгээ холбогд</small></div>
+<div class="card" onclick="show('play')"><h3>🎮 K-pop Play</h3><small>Quiz болон тоглоом</small></div>
+<div class="card" onclick="show('profile')"><h3>👤 My Profile</h3><small>Миний профайл</small></div>
+</div>
+</section>
+
+<section id="market" class="page">
+<h2>🛍️ Marketplace</h2>
+<input id="search" placeholder="Бараа хайх..." oninput="render()">
+<button onclick="add()">+ Зар нэмэх</button>
+<div class="products" id="products"></div>
+</section>
+
+<section id="community" class="page">
+<h2>💬 Community</h2>
+<textarea id="postText" placeholder="Юу хуваалцмаар байна?"></textarea>
+<button onclick="post()">Пост оруулах</button>
+<div id="posts"></div>
+</section>
+
+<section id="play" class="page">
+<h2>🎮 K-pop Quiz</h2>
+<div class="card">
+<h3 id="question">WANNABE дуу аль хамтлагийнх вэ?</h3>
+<button onclick="answer('ITZY')">ITZY</button>
+<button onclick="answer('TWS')">TWS</button>
+<button onclick="answer('IVE')">IVE</button>
+<p id="result"></p>
+<button onclick="next()">Дараагийн асуулт</button>
+</div>
+</section>
+
+<section id="profile" class="page">
+<h2>👤 My Profile</h2>
+<div class="card">
+<h1>🌹</h1>
+<h3>KPOPVERSE FAN</h3>
+<p>Welcome to your K-pop universe.</p>
+<small>Profile demo</small>
+</div>
+</section>
+</main>
+
+<nav>
+<button onclick="show('home')">⌂ Нүүр</button>
+<button onclick="show('market')">🛍️ Зар</button>
+<button onclick="show('community')">♡ Community</button>
+<button onclick="show('play')">✧ Play</button>
+<button onclick="show('profile')">☻ Profile</button>
+</nav>
+
+<script>
+function show(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+window.scrollTo(0,0);
+}
+let items=[
+{name:'YUNA Photocard',price:'12,000₮',emoji:'🩵'},
+{name:'ITZY Album',price:'35,000₮',emoji:'💿'},
+{name:'SKZ Merch',price:'18,000₮',emoji:'⭐'},
+{name:'TWS Photocard',price:'Солилцоно',emoji:'🫧'}
+];
+function render(){
+let q=document.getElementById('search').value.toLowerCase();
+document.getElementById('products').innerHTML=items.filter(x=>x.name.toLowerCase().includes(q)).map(x=>`
+<div class="product"><div class="emoji">${x.emoji}</div><h3>${x.name}</h3><p class="price">${x.price}</p></div>
+`).join('');
+}
+function add(){
+let n=prompt('Бүтээгдэхүүний нэр?');
+if(!n)return;
+let p=prompt('Үнэ?');
+if(!p)return;
+items.unshift({name:n,price:p,emoji:'🌹'});
+render();
+}
+function post(){
+let t=document.getElementById('postText').value.trim();
+if(!t)return;
+document.getElementById('posts').innerHTML=
+'<div class="post"><b>🌹 KPOPVERSE FAN</b><p>'+escapeText(t)+'</p></div>'+
+document.getElementById('posts').innerHTML;
+document.getElementById('postText').value='';
+}
+function escapeText(t){
+return t.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+let questions=[
+['WANNABE дуу аль хамтлагийнх вэ?','ITZY'],
+['God’s Menu дуу аль хамтлагийнх вэ?','Stray Kids'],
+['Plot Twist дуу аль хамтлагийнх вэ?','TWS']
+];
+let qi=0;
+function answer(a){
+document.getElementById('result').textContent=
+a===questions[qi][1]?'Зөв хариулт! 🎉':'Дахин оролдоорой!';
+}
+function next(){
+qi=(qi+1)%questions.length;
+document.getElementById('question').textContent=questions[qi][0];
+document.getElementById('result').textContent='';
+}
+render();
+</script>
+</body>
+</html>
