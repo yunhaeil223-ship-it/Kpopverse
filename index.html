@@ -1,162 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="mn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KPOPVERSE</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KPOPVERSE — Your K-pop Universe</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#111;color:#f5e8ea;font-family:Arial,sans-serif}
-header{padding:18px;background:#1c181a;border-bottom:1px solid #650d24;display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:23px;font-weight:bold;letter-spacing:2px}
-.logo span{color:#d45b78}
-button{background:#650d24;color:white;border:0;border-radius:10px;padding:11px 15px;cursor:pointer}
-main{max-width:900px;margin:auto;padding:18px 15px 90px}
-.hero{padding:35px 20px;border-radius:20px;background:linear-gradient(135deg,#401322,#171316);border:1px solid #650d24}
-.hero h1{font-size:38px;margin:15px 0}
-.hero p{color:#d2bfc5;line-height:1.6}
-h2{margin-top:30px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.card{background:#1c181a;border:1px solid #38272d;border-radius:15px;padding:17px}
-.card h3{color:#e9a2b2}
-.page{display:none}
-.page.active{display:block}
-.products{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.product{background:#1c181a;border:1px solid #38272d;border-radius:14px;padding:14px}
-.product .emoji{font-size:40px;text-align:center;padding:15px}
-.price{color:#f0a1b4;font-weight:bold}
-input,textarea,select{width:100%;padding:12px;margin:7px 0 13px;background:#100e0f;color:white;border:1px solid #650d24;border-radius:9px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#1c181a;display:flex;justify-content:space-around;padding:12px 2px;border-top:1px solid #650d24}
-nav button{background:transparent;padding:7px 4px;font-size:12px}
-.post{padding:15px 0;border-bottom:1px solid #38272d}
-small{color:#bbaab0}
-@media(min-width:650px){.grid,.products{grid-template-columns:repeat(4,1fr)}}
-</style>
-</head>
+:root{--bg:#100e10;--panel:#1c181a;--panel2:#261b20;--red:#780f30;--red2:#a52a48;--pink:#f5e8ea;--muted:#c1adb5;--line:#4a2935}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--pink);font:15px Arial,sans-serif}header{position:sticky;top:0;z-index:4;background:#171316;border-bottom:1px solid var(--line);padding:13px 16px;display:flex;align-items:center;justify-content:space-between}.brand{font-size:21px;font-weight:900;letter-spacing:2px}.brand b{color:#d65c7b}.wrap{max-width:1000px;margin:auto;padding:16px 14px 90px}.panel,.hero,.tile{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}.hero{background:linear-gradient(135deg,#451327,#1b171a);padding:25px}.hero h1{font-size:36px;margin:10px 0}.muted,small{color:var(--muted)}button{background:var(--red);color:white;border:0;border-radius:10px;padding:11px 14px;margin:4px 3px 4px 0;font-weight:700}button.alt{background:#382630}button:disabled{opacity:.45}input,textarea,select{width:100%;background:#100e10;border:1px solid var(--line);border-radius:9px;padding:12px;color:white;margin:6px 0 12px}textarea{min-height:85px}label{display:block;color:var(--muted);font-size:13px}.tabs{display:flex;gap:5px;overflow:auto;padding:8px 0;position:sticky;top:51px;background:var(--bg);z-index:3}.tabs button{white-space:nowrap;font-size:12px}.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}.tile h3{color:#e9a2b2;margin:8px 0}.product img{width:100%;height:130px;object-fit:cover;border-radius:9px;background:#30232a}.status{padding:10px;border-radius:9px;background:#2a1c22;color:#f3dce3;white-space:pre-wrap;margin:10px 0}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}.hidden{display:none!important}.post,.msg{border-bottom:1px solid var(--line);padding:12px 0}.msg{background:#251a20;border-radius:10px;padding:10px;margin:7px 0}.danger{color:#ff9caf}.foot{font-size:12px;color:var(--muted);text-align:center;padding:20px}a{color:#f2a2b7}
+</style></head>
 <body>
-
-<header>
-<div class="logo">KPOP<span>VERSE</span></div>
-<button onclick="show('profile')">Profile</button>
-</header>
-
-<main>
-<section id="home" class="page active">
-<div class="hero">
-<small>YOUR K-POP UNIVERSE</small>
-<h1>Find your<br><span style="color:#d45b78">K-pop world.</span></h1>
-<p>Монгол K-pop фэнүүдийн нэгдэл. Цуглуулгаа хуваалц, шинэ зүйл ол, фэнүүдтэйгээ холбогд.</p>
-<button onclick="show('market')">Marketplace үзэх</button>
-<button onclick="show('community')">Community</button>
-</div>
-
-<h2>Explore KPOPVERSE</h2>
-<div class="grid">
-<div class="card" onclick="show('market')"><h3>🛍️ Marketplace</h3><small>Album, photocard, merch</small></div>
-<div class="card" onclick="show('community')"><h3>💬 Community</h3><small>Фэнүүдтэйгээ холбогд</small></div>
-<div class="card" onclick="show('play')"><h3>🎮 K-pop Play</h3><small>Quiz болон тоглоом</small></div>
-<div class="card" onclick="show('profile')"><h3>👤 My Profile</h3><small>Миний профайл</small></div>
-</div>
-</section>
-
-<section id="market" class="page">
-<h2>🛍️ Marketplace</h2>
-<input id="search" placeholder="Бараа хайх..." oninput="render()">
-<button onclick="add()">+ Зар нэмэх</button>
-<div class="products" id="products"></div>
-</section>
-
-<section id="community" class="page">
-<h2>💬 Community</h2>
-<textarea id="postText" placeholder="Юу хуваалцмаар байна?"></textarea>
-<button onclick="post()">Пост оруулах</button>
-<div id="posts"></div>
-</section>
-
-<section id="play" class="page">
-<h2>🎮 K-pop Quiz</h2>
-<div class="card">
-<h3 id="question">WANNABE дуу аль хамтлагийнх вэ?</h3>
-<button onclick="answer('ITZY')">ITZY</button>
-<button onclick="answer('TWS')">TWS</button>
-<button onclick="answer('IVE')">IVE</button>
-<p id="result"></p>
-<button onclick="next()">Дараагийн асуулт</button>
-</div>
-</section>
-
-<section id="profile" class="page">
-<h2>👤 My Profile</h2>
-<div class="card">
-<h1>🌹</h1>
-<h3>KPOPVERSE FAN</h3>
-<p>Welcome to your K-pop universe.</p>
-<small>Profile demo</small>
-</div>
-</section>
-</main>
-
-<nav>
-<button onclick="show('home')">⌂ Нүүр</button>
-<button onclick="show('market')">🛍️ Зар</button>
-<button onclick="show('community')">♡ Community</button>
-<button onclick="show('play')">✧ Play</button>
-<button onclick="show('profile')">☻ Profile</button>
+<header><div class="brand">KPOP<b>VERSE</b></div><span id="topUser" class="muted">🌹 fan universe</span></header>
+<div class="wrap">
+<section class="hero"><small>YOUR MONGOLIAN K-POP UNIVERSE</small><h1>Find your <span style="color:#e16b8a">K-pop world.</span></h1><p>Монгол K-pop фэнүүдийн нэгдэл — цуглуулгаа хуваалц, зар үз, фэнүүдтэйгээ холбогд.</p></section>
+<div id="configNotice" class="status">Тохиргоо хийгдээгүй байна. Доорх зааврын дагуу Supabase URL болон publishable/anon key-гээ кодонд оруулна уу.</div>
+<section id="auth" class="panel"><h2>Нэвтрэх / Бүртгүүлэх</h2><label>Имэйл</label><input id="email" type="email" placeholder="name@example.com"><label>Нууц үг</label><input id="password" type="password" placeholder="Дор хаяж 6 тэмдэгт"><div class="row"><button onclick="signup()">Бүртгүүлэх</button><button class="alt" onclick="login()">Нэвтрэх</button></div><div id="authMsg" class="status">Supabase холбогдсоны дараа бүртгэл ажиллана.</div><small>Нууц үгээ хэнд ч бүү өг. Бүртгэлийн баталгаажуулах имэйл ирж болно.</small></section>
+<section id="app" class="hidden">
+<nav class="tabs">
+<button onclick="tab('home')">Нүүр</button><button onclick="tab('market')">Marketplace</button><button onclick="tab('community')">Community</button><button onclick="tab('chat')">Чат</button><button onclick="tab('quiz')">Quiz</button><button onclick="tab('profile')">Профайл</button><button id="adminTab" class="hidden" onclick="tab('admin')">Admin</button>
 </nav>
-
+<section id="home" class="view active"><div class="panel"><h2>Тавтай морил!</h2><p>Эндээс K-pop ертөнцөө эхлүүлээрэй.</p><div class="grid"><div class="tile"><h3>🛍️ Marketplace</h3><p class="muted">Album, photocard, merch</p></div><div class="tile"><h3>💬 Community</h3><p class="muted">Пост, сэтгэгдэл</p></div><div class="tile"><h3>🎮 Quiz</h3><p class="muted">K-pop мэдлэгээ сорь</p></div><div class="tile"><h3>👤 Profile</h3><p class="muted">Өөрийн мэдээлэл</p></div></div></div></section>
+<section id="market" class="view"><div class="panel"><h2>Marketplace</h2><p class="muted">Зөвхөн хууль ёсны, өөрийн эзэмшлийн бараа нийтлээрэй. Төлбөрийг апп дотор хийхгүй.</p><label>Барааны нэр</label><input id="itemTitle" placeholder="Жишээ: Album / Photocard"><label>Тайлбар</label><textarea id="itemDesc" placeholder="Нөхцөл, солих эсэх..."></textarea><div class="row"><div><label>Үнэ (₮)</label><input id="itemPrice" type="number" min="0" placeholder="15000"></div><div><label>Ангилал</label><select id="itemCategory"><option>Album</option><option>Photocard</option><option>Lightstick</option><option>Fanmade</option><option>Other</option></select></div></div><button onclick="addListing()">Зар нэмэх</button><div id="marketMsg" class="status"></div></div><div id="listings" class="grid"></div></section>
+<section id="community" class="view"><div class="panel"><h2>Community</h2><textarea id="postBody" placeholder="K-pop тухай бодлоо хуваалцаарай..."></textarea><button onclick="addPost()">Пост оруулах</button><div id="communityMsg" class="status"></div></div><div id="posts"></div></section>
+<section id="chat" class="view"><div class="panel"><h2>Чат</h2><p class="muted">Хэрэглэгчийн имэйл/нууц мэдээлэл нийтэд харагдахгүй. Танихгүй хүнд хувийн мэдээлэл бүү илгээгээрэй.</p><label>Чатлах хэрэглэгчийн profile ID</label><input id="chatTo" placeholder="Profile ID"><label>Мессеж</label><textarea id="chatBody" placeholder="Мессеж..."></textarea><button onclick="sendMessage()">Илгээх</button><button class="alt" onclick="loadMessages()">Шинэчлэх</button><div id="chatMsg" class="status"></div><div id="messages"></div></div></section>
+<section id="quiz" class="view"><div class="panel"><h2>K-pop Quiz</h2><h3 id="question">WANNABE дуу аль хамтлагийнх вэ?</h3><div id="answers"></div><div id="quizResult" class="status"></div><button class="alt" onclick="nextQuestion()">Дараагийн асуулт</button></div></section>
+<section id="profile" class="view"><div class="panel"><h2>Миний профайл</h2><label>Харагдах нэр</label><input id="displayName" placeholder="Fan name"><label>Танилцуулга</label><textarea id="bio" placeholder="Өөрийн тухай..."></textarea><button onclick="saveProfile()">Хадгалах</button><div id="profileMsg" class="status"></div><button class="alt" onclick="logout()">Гарах</button></div></section>
+<section id="admin" class="view"><div class="panel"><h2>Admin dashboard</h2><p>Энэ хэсэг зөвхөн profiles.role = admin/super_admin хэрэглэгчид харагдана. Зарын хяналтыг дараагийн хувилбарт нэмнэ.</p><div id="adminMsg" class="status"></div></div></section>
+</section><div class="foot">KPOPVERSE • Community demo • Safe trading: meet with trusted adult support; no in-app payments.</div>
+</div>
 <script>
-function show(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-window.scrollTo(0,0);
-}
-let items=[
-{name:'YUNA Photocard',price:'12,000₮',emoji:'🩵'},
-{name:'ITZY Album',price:'35,000₮',emoji:'💿'},
-{name:'SKZ Merch',price:'18,000₮',emoji:'⭐'},
-{name:'TWS Photocard',price:'Солилцоно',emoji:'🫧'}
-];
-function render(){
-let q=document.getElementById('search').value.toLowerCase();
-document.getElementById('products').innerHTML=items.filter(x=>x.name.toLowerCase().includes(q)).map(x=>`
-<div class="product"><div class="emoji">${x.emoji}</div><h3>${x.name}</h3><p class="price">${x.price}</p></div>
-`).join('');
-}
-function add(){
-let n=prompt('Бүтээгдэхүүний нэр?');
-if(!n)return;
-let p=prompt('Үнэ?');
-if(!p)return;
-items.unshift({name:n,price:p,emoji:'🌹'});
-render();
-}
-function post(){
-let t=document.getElementById('postText').value.trim();
-if(!t)return;
-document.getElementById('posts').innerHTML=
-'<div class="post"><b>🌹 KPOPVERSE FAN</b><p>'+escapeText(t)+'</p></div>'+
-document.getElementById('posts').innerHTML;
-document.getElementById('postText').value='';
-}
-function escapeText(t){
-return t.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-let questions=[
-['WANNABE дуу аль хамтлагийнх вэ?','ITZY'],
-['God’s Menu дуу аль хамтлагийнх вэ?','Stray Kids'],
-['Plot Twist дуу аль хамтлагийнх вэ?','TWS']
-];
-let qi=0;
-function answer(a){
-document.getElementById('result').textContent=
-a===questions[qi][1]?'Зөв хариулт! 🎉':'Дахин оролдоорой!';
-}
-function next(){
-qi=(qi+1)%questions.length;
-document.getElementById('question').textContent=questions[qi][0];
-document.getElementById('result').textContent='';
-}
-render();
-</script>
-</body>
-</html>
+/* Paste your Supabase Project URL and PUBLIC publishable/anon key below. Never use service_role/secret keys in a browser. */
+const SUPABASE_URL="https://pxcvchjcoipkmccohuht.supabase.co";
+const SUPABASE_PUBLIC_KEY="PASTE_PUBLIC_PUBLISHABLE_OR_ANON_KEY";
+const configured=!!window.supabase&&!SUPABASE_PUBLIC_KEY.startsWith("PASTE_");
+const sb=configured?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY):null;
+let me=null,quizIndex=0;
+const quiz=[["WANNABE аль хамтлагийн дуу вэ?",["ITZY","TWS","IVE"],"ITZY"],["God's Menu аль хамтлагийн дуу вэ?",["Stray Kids","NMIXX","TXT"],"Stray Kids"],["Plot Twist аль хамтлагийн дуу вэ?",["TWS","ITZY","aespa"],"TWS"]];
+function msg(id,t){document.getElementById(id).textContent=t}
+function tab(id){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");if(id==="market")loadListings();if(id==="community")loadPosts();if(id==="chat")loadMessages();if(id==="profile")loadProfile()}
+function ready(){if(!configured){msg("authMsg","Supabase public key-гээ кодонд оруулсны дараа ажиллана.");return false}return true}
+async function signup(){if(!ready())return;let email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;if(!email||password.length<6){msg("authMsg","Имэйлээ бөглөж, 6-аас дээш тэмдэгттэй нууц үг оруулна уу.");return}let {error}=await sb.auth.signUp({email,password});msg("authMsg",error?error.message:"Бүртгэл үүслээ. Имэйлээ шалгаж баталгаажуулна уу.") }
+async function login(){if(!ready())return;let email=document.getElementById("email").value.trim(),password=document.getElementById("password").value;let {data,error}=await sb.auth.signInWithPassword({email,password});if(error){msg("authMsg",error.message);return}await enter(data.user)}
+async function enter(user){me=user;document.getElementById("auth").classList.add("hidden");document.getElementById("app").classList.remove("hidden");document.getElementById("topUser").textContent="Signed in";let {data}=await sb.from("profiles").select("role").eq("id",me.id).maybeSingle();if(data&&["admin","super_admin"].includes(data.role))document.getElementById("adminTab").classList.remove("hidden");tab("home")}
+async function logout(){await sb.auth.signOut();location.reload()}
+async function loadProfile(){if(!me)return;let {data}=await sb.from("profiles").select("display_name,bio").eq("id",me.id).maybeSingle();if(data){document.getElementById("displayName").value=data.display_name||"";document.getElementById("bio").value=data.bio||""}}
+async function saveProfile(){let {error}=await sb.from("profiles").upsert({id:me.id,display_name:document.getElementById("displayName").value.trim(),bio:document.getElementById("bio").value.trim()});msg("profileMsg",error?error.message:"Профайл хадгалагдлаа.")}
+async function addListing(){let title=document.getElementById("itemTitle").value.trim();if(!title){msg("marketMsg","Барааны нэр оруулна уу.");return}let {error}=await sb.from("listings").insert({seller_id:me.id,title,description:document.getElementById("itemDesc").value,price_mnt:Number(document.getElementById("itemPrice").value||0),category:document.getElementById("itemCategory").value});msg("marketMsg",error?error.message:"Зар нэмэгдлээ.");if(!error){["itemTitle","itemDesc","itemPrice"].forEach(id=>document.getElementById(id).value="");loadListings()}}
+async function loadListings(){let {data,error}=await sb.from("listings").select("id,title,description,price_mnt,category,created_at").eq("status","active").order("created_at",{ascending:false}).limit(50);let el=document.getElementById("listings");el.innerHTML="";if(error){el.textContent=error.message;return}for(let x of data||[]){let d=document.createElement("div");d.className="tile";let h=document.createElement("h3");h.textContent=x.title;let p=document.createElement("p");p.textContent=x.description||"";let s=document.createElement("small");s.textContent=x.category+" • "+Number(x.price_mnt).toLocaleString("mn-MN")+"₮";d.append(h,p,s);el.append(d)}}
+async function addPost(){let body=document.getElementById("postBody").value.trim();if(!body)return;let {error}=await sb.from("posts").insert({user_id:me.id,body});msg("communityMsg",error?error.message:"Пост нийтлэгдлээ.");if(!error){document.getElementById("postBody").value="";loadPosts()}}
+async function loadPosts(){let {data,error}=await sb.from("posts").select("id,body,created_at").order("created_at",{ascending:false}).limit(50);let el=document.getElementById("posts");el.innerHTML="";if(error){el.textContent=error.message;return}for(let x of data||[]){let d=document.createElement("div");d.className="post";let p=document.createElement("p");p.textContent=x.body;let s=document.createElement("small");s.textContent=new Date(x.created_at).toLocaleString();d.append(p,s);el.append(d)}}
+async function sendMessage(){let to=document.getElementById("chatTo").value.trim(),body=document.getElementById("chatBody").value.trim();if(!to||!body){msg("chatMsg","Profile ID болон мессежээ бөглөнө үү.");return}let {error}=await sb.from("messages").insert({sender_id:me.id,recipient_id:to,body});msg("chatMsg",error?error.message:"Мессеж илгээгдлээ.");if(!error){document.getElementById("chatBody").value="";loadMessages()}}
+async function loadMessages(){if(!me)return;let {data,error}=await sb.from("messages").select("sender_id,recipient_id,body,created_at").or(`sender_id.eq.${me.id},recipient_id.eq.${me.id}`).order("created_at",{ascending:false}).limit(40);let el=document.getElementById("messages");el.innerHTML="";if(error){el.textContent=error.message;return}for(let x of data||[]){let d=document.createElement("div");d.className="msg";let p=document.createElement("p");p.textContent=x.body;let s=document.createElement("small");s.textContent=(x.sender_id===me.id?"Та":"Нөгөө хэрэглэгч")+" • "+new Date(x.created_at).toLocaleString();d.append(p,s);el.append(d)}}
+function drawQuiz(){let q=quiz[quizIndex];document.getElementById("question").textContent=q[0];let a=document.getElementById("answers");a.innerHTML="";q[1].forEach(v=>{let b=document.createElement("button");b.className="alt";b.textContent=v;b.onclick=()=>msg("quizResult",v===q[2]?"Зөв! 🎉":"Дахин оролдоорой.");a.append(b)})}
+function nextQuestion(){quizIndex=(quizIndex+1)%quiz.length;msg("quizResult","");drawQuiz()}
+drawQuiz();
+if(configured){document.getElementById("configNotice").classList.add("hidden");sb.auth.getSession().then(({data})=>{if(data.session)enter(data.session.user)});sb.auth.onAuthStateChange((_e,s)=>{if(s&&!me)enter(s.user)})}
+</script></body></html>
