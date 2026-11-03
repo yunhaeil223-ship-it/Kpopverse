@@ -30,11 +30,11 @@
 <script>
 /* Paste your Supabase Project URL and PUBLIC publishable/anon key below. Never use service_role/secret keys in a browser. */
 const SUPABASE_URL="https://pxcvchjcoipkmccohuht.supabase.co";
-const SUPABASE_PUBLIC_KEY="PASTE_PUBLIC_PUBLISHABLE_OR_ANON_KEY";
+const SUPABASE_PUBLIC_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB4Y3ZjaGpjb2lwa21jY29odWh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2Mjc5OTksImV4cCI6MjEwOTIwMzk5OX0.zERSxDz9tJHtf7d8MYJyRnRuRLxJDkbh7MTo3-4nuWY";
 const configured=!!window.supabase&&!SUPABASE_PUBLIC_KEY.startsWith("PASTE_");
 const sb=configured?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY):null;
 let me=null,quizIndex=0;
-const quiz=[["WANNABE аль хамтлагийн дуу вэ?",["ITZY","TWS","IVE"],"ITZY"],["God's Menu аль хамтлагийн дуу вэ?",["Stray Kids","NMIXX","TXT"],"Stray Kids"],["Plot Twist аль хамтлагийн дуу вэ?",["TWS","ITZY","aespa"],"TWS"]];
+const quiz=[["WANNABE аль хамтлагийн дуу вэ?",["ITZY","TWS","IVE"],"ITZY"],["God's Menu аль хамтлагийн дуу вэ?",["Stray Kids","NMIXX","TXT","ENHYPEN","AESPA],"Stray Kids"],["Plot Twist аль хамтлагийн дуу вэ?",["TWS","ITZY","aespa"],"TWS"]];
 function msg(id,t){document.getElementById(id).textContent=t}
 function tab(id){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");if(id==="market")loadListings();if(id==="community")loadPosts();if(id==="chat")loadMessages();if(id==="profile")loadProfile()}
 function ready(){if(!configured){msg("authMsg","Supabase public key-гээ кодонд оруулсны дараа ажиллана.");return false}return true}
